@@ -143,7 +143,8 @@ section.blk{padding:110px 0;scroll-margin-top:80px}
 .pc{background:var(--plaster);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s;cursor:pointer;position:relative}
 .pc:hover{transform:translateY(-8px);box-shadow:0 30px 60px rgba(42,24,16,.18)}
 .pc-img{position:relative;aspect-ratio:4/4.3;overflow:hidden;background:var(--ink)}
-.pc-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.pc-img img{position:relative;width:100%;height:100%;object-fit:contain;transition:transform .7s}
+.pc-img::before,.m-img::before{content:"";position:absolute;top:-24px;right:-24px;bottom:-24px;left:-24px;background:var(--bg) center/cover no-repeat;filter:blur(26px) saturate(1.1);opacity:.95}
 .pc:hover .pc-img img{transform:scale(1.08)}
 .pc-img .rank{position:absolute;right:14px;bottom:4px;font-family:var(--big);font-size:120px;line-height:1;color:#fff;opacity:.85;-webkit-text-stroke:0}
 .pc-img .tags{position:absolute;top:14px;left:14px}
@@ -246,10 +247,10 @@ footer{background:var(--ink);color:#fff;padding:70px 0 30px;overflow:hidden}
 .modal{position:fixed;z-index:210;left:50%;top:50%;width:min(1020px,calc(100% - 32px));max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow:auto;background:#fff;border-radius:20px;transform:translate(-50%,-46%) scale(.97);opacity:0;visibility:hidden;transition:.35s cubic-bezier(.2,.7,.2,1);display:grid;grid-template-columns:1fr 1fr}
 .modal.on{opacity:1;visibility:visible;transform:translate(-50%,-50%)}
 .m-img{position:relative;background:var(--ink);min-height:420px}
-.m-img img.main{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:cover}
+.m-img img.main{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:contain}
 .thumbs{position:absolute;left:14px;bottom:14px;right:14px;display:flex;gap:8px;z-index:2;flex-wrap:wrap}
 .thumbs button{width:56px;height:56px;border-radius:10px;overflow:hidden;border:2px solid rgba(255,255,255,.85);opacity:.75;padding:0;background:#fff;transition:.2s}
-.thumbs button img{width:100%;height:100%;object-fit:cover}
+.thumbs button img{width:100%;height:100%;object-fit:contain}
 .thumbs button[aria-current="true"]{opacity:1;border-color:var(--fire2);transform:translateY(-2px)}
 .sold{position:absolute;inset:0;background:rgba(42,24,16,.55);display:grid;place-items:center;color:#fff;font-family:var(--big);font-size:44px;text-transform:uppercase;z-index:1}
 .pc.out .add{background:var(--mute)}
@@ -618,7 +619,7 @@ window.CATALOGO_BASE=[
   imgs:['img/p02-1.jpg','img/p02-2.jpg']},
  {id:'ref-03',ref:'03',n:'Deportivo Negro',color:'Negro',precio:145000,antes:0,etiqueta:'',orden:3,agotado:false,visible:true,tallas:[38,39,40,41,42,43,44],
   d:'Negro sobrio para el día a día o para la oficina. Piel suave, suela blanca y costuras firmes.',
-  imgs:['img/p03-1.jpg','img/p03-2.jpg','img/p03-3.jpg','img/p03-4.jpg']},
+  imgs:['img/p03-3.jpg','img/p03-1.jpg','img/p03-2.jpg','img/p03-4.jpg']},
  {id:'ref-04',ref:'04',n:'Deportivo Miel',color:'Miel',precio:145000,antes:0,etiqueta:'',orden:4,agotado:false,visible:true,tallas:[38,39,40,41,42,43,44],
   d:'Cuero color miel con cordones claros y suela blanca. Un tono tierra que combina con todo.',
   imgs:['img/p04-1.jpg','img/p04-2.jpg','img/p04-3.jpg']},
@@ -718,7 +719,7 @@ function renderGrid(){
   g.innerHTML=PRODUCTOS.map(function(p,i){
     var rng=p.tallas.length?'Tallas '+p.tallas[0]+'–'+p.tallas[p.tallas.length-1]:'';
     return '<article class="pc rv v'+(p.agotado?' out':'')+'" data-id="'+esc(p.id)+'" tabindex="0" role="button" aria-label="Ver '+esc(p.n)+'">'+
-    '<div class="pc-img"><img src="'+esc(p.img)+'" alt="'+esc(p.n)+'" loading="lazy">'+(p.agotado?'<div class="sold">Agotado</div>':'')+'<div class="tags">'+(p.tag?'<span class="tag tag-'+p.tag[1]+'">'+esc(p.tag[0])+'</span>':'')+(p.antes>p.precio?'<span class="tag tag-ink">-'+Math.round((1-p.precio/p.antes)*100)+'%</span>':'')+'</div><span class="view btn btn-white">Ver tallas</span></div>'+
+    '<div class="pc-img" style="--bg:url(\''+esc(p.img)+'\')"><img src="'+esc(p.img)+'" alt="'+esc(p.n)+'" loading="lazy">'+(p.agotado?'<div class="sold">Agotado</div>':'')+'<div class="tags">'+(p.tag?'<span class="tag tag-'+p.tag[1]+'">'+esc(p.tag[0])+'</span>':'')+(p.antes>p.precio?'<span class="tag tag-ink">-'+Math.round((1-p.precio/p.antes)*100)+'%</span>':'')+'</div><span class="view btn btn-white">Ver tallas</span></div>'+
     '<div class="pc-b"><div class="meta mono"><span>Ref. '+esc(p.ref)+'</span><span>'+rng+'</span></div>'+
     '<h3>'+esc(p.n)+'</h3><p>'+esc(p.color?p.color+' · ':'')+esc((p.d||'').split('.')[0])+'.</p>'+
     '<div class="pc-price"><b>'+money(p.precio)+'</b>'+(p.antes>p.precio?'<s>'+money(p.antes)+'</s>':'')+'</div>'+
@@ -736,7 +737,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()})
 
 /* ---- modal de producto ---- */
 var cur={p:null,s:null,q:1};
-function showImg(src,alt){var im=$('#pmImg');im.src=src;im.alt=alt||''}
+function showImg(src,alt){var im=$('#pmImg');im.src=src;im.alt=alt||'';im.parentNode.style.setProperty('--bg',"url('"+src+"')")}
 function openProduct(id){
   var p=PRODUCTOS.find(function(x){return x.id===id});if(!p)return;
   cur={p:p,s:null,q:1};
